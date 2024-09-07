@@ -211,39 +211,42 @@ bot.start(async (ctx) => {
     // Read and send the image along with the referral link
     await ctx.replyWithPhoto(
       { source: fs.createReadStream(imagePath) },
-      { caption: `Botimizga xush kelibsiz🤠\n\nBu sizning havolangiz:\n${referralLink}\n Bu havolani do'stlaringizga ulashib ball yig'ishingiz kerak 🪙\nAgar siz 15 ball yig'ib bo'lsangiz, bizning Neuroscience darslarimiz uchun maxsus link qo'lga kiritasiz 🔗\nBallni aniqlash: /score\nLinkni olish: /link`}
+      { caption: `Botimizga xush kelibsiz🤠\n\nBu botda siz o'z havolangizni do'stlaringizga ulashib ball yig'ishingiz kerak 🪙\nAgar siz 15 ball yig'ib bo'lsangiz, bizning Neuroscience darslarimiz uchun maxsus link qo'lga kiritasiz 🔗\nBallni aniqlash: /score\nLinkni olish: /link`}
     );
+    await ctx.reply(`Bu sizning havolangiz:\n${referralLink}`)
   } else {
     // Generate channel and group buttons with labels
     const channelLinks = requiredChannels.map((link, index) => ({
-      text: `Channel ${index + 1}`,
-      url: formatLinkv2(link) // Ensure URL is correctly formatted
-    }));
-    const groupLinks = requiredGroups.map((link, index) => ({
-      text: `Group ${index + 1}`,
-      url: formatLinkv2(link) // Ensure URL is correctly formatted
-    }));
-    const buttonsPerRow = 2; // Adjust this number if needed
-
-    // Combine all buttons and organize them into rows
-    const allButtons = [...channelLinks, ...groupLinks];
-    const chunkArray = (array, size) => {
-      const result = [];
-      for (let i = 0; i < array.length; i += size);
-      result.push(array.slice(i, i + size));
-    };
-    const inlineKeyboard = chunkArray(allButtons, buttonsPerRow);
-
-    // Send message with organized inline keyboard
-    await ctx.reply(
-      "❌ Sorry, you need to join these channels and groups before using the bot:",
-      {
-        reply_markup: {
-          inline_keyboard: inlineKeyboard
+        text: `Kanal ${index + 1}`,
+        url: formatLinkv2(link) // Ensure URL is correctly formatted
+      }));
+      const groupLinks = requiredGroups.map((link, index) => ({
+        text: `Guruh ${index + 1}`,
+        url: formatLinkv2(link) // Ensure URL is correctly formatted
+      }));
+      const buttonsPerRow = 2; // Adjust this number if needed
+  
+      // Combine all buttons and organize them into rows
+      const allButtons = [...channelLinks, ...groupLinks];
+      const chunkArray = (array, size) => {
+        const result = [];
+        for (let i = 0; i < array.length; i += size) {
+          result.push(array.slice(i, i + size));
         }
-      }
-    );
-  }
+        return result;
+      };
+      const inlineKeyboard = chunkArray(allButtons, buttonsPerRow);
+  
+      // Send message with organized inline keyboard
+      await ctx.reply(
+        "❌ Kechirasiz, botimizdan foydalanishdan oldin ushbu kanallarga a'zo bo'lishingiz kerak:",
+        {
+          reply_markup: {
+            inline_keyboard: inlineKeyboard
+          }
+        }
+      );
+    }
 });
   
 bot.command('link', async (ctx) => {
